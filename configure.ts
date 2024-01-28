@@ -13,5 +13,21 @@
 */
 
 import ConfigureCommand from '@adonisjs/core/commands/configure'
+import { stubsRoot } from './stubs/main.js'
 
-export async function configure(_command: ConfigureCommand) {}
+export async function configure(command: ConfigureCommand) {
+  const codemods = await command.createCodemods()
+
+  /**
+   * Publish config file
+   */
+  await codemods.makeUsingStub(stubsRoot, 'config/queue.stub', {})
+
+  /**
+   * Register provider
+   */
+  await codemods.updateRcFile((rcFile) => {
+    rcFile.addProvider('@acidiney/bull-queue/queue_provider')
+    rcFile.addCommand('@acidiney/bull-queue/commands')
+  })
+}

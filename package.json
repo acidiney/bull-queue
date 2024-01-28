@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate",
+  "name": "@acidiney/bull-queue",
   "description": "",
   "version": "0.0.0",
   "engines": {
@@ -9,6 +9,7 @@
   "files": [
     "build/src",
     "build/providers",
+    "build/commands",
     "build/stubs",
     "build/index.d.ts",
     "build/index.js"
@@ -80,5 +81,8 @@
   "eslintConfig": {
     "extends": "@adonisjs/eslint-config/package"
   },
-  "prettier": "@adonisjs/prettier-config"
+  "prettier": "@adonisjs/prettier-config",
+  "dependencies": {
+    "bullmq": "^5.1.5"
+  }
 }
