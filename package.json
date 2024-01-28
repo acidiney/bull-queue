@@ -1,7 +1,7 @@
 {
   "name": "@acidiney/bull-queue",
   "description": "",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "engines": {
     "node": ">=18.16.0"
   },
@@ -16,7 +16,9 @@
   ],
   "exports": {
     ".": "./build/index.js",
+    "./commands": "./build/commands/main.js",
     "./types": "./build/src/types.js",
+    "./queue": "./build/src/queue.js",
     "./queue_provider": "./build/providers/queue_provider.js",
     "./services/main": "./build/services/queue.js"
   },
@@ -31,7 +33,8 @@
     "test": "c8 npm run quick:test",
     "prebuild": "npm run lint && npm run clean",
     "build": "tsc",
-    "postbuild": "npm run copy:templates",
+    "postbuild": "npm run copy:templates && npm run index:commands",
+    "index:commands": "adonis-kit index build/commands",
     "release": "np",
     "version": "npm run build",
     "prepublishOnly": "npm run build"
