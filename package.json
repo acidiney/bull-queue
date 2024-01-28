@@ -42,6 +42,7 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "main": "./build/index.js",
   "devDependencies": {
     "@adonisjs/assembler": "^7.0.0",
     "@adonisjs/core": "^6.2.0",
