@@ -11,6 +11,8 @@
     "build/providers",
     "build/commands",
     "build/stubs",
+    "build/configure.js",
+    "build/configure.d.ts",
     "build/index.d.ts",
     "build/index.js"
   ],
