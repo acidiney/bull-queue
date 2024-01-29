@@ -1,5 +1,6 @@
 {{#var jobName = generators.modelName(job.name)}}
 {{#var jobFileName = generators.modelFileName(job.name)}}
+{{#var name = job.name}}
 
 {{{
   exports({
