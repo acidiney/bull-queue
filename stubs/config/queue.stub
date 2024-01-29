@@ -1,7 +1,7 @@
 {{{ exports({ to: app.configPath('queue.ts') }) }}}
 
 import env from '#start/env'
-import { defineConfig } from '@acidiney/adonis-queue'
+import { defineConfig } from '@acidiney/bull-queue'
 
 export default defineConfig({
 connection: {

@@ -24,8 +24,8 @@ export type DispatchOptions = JobsOptions & {
 
 export type QueueConfig = {
   connection: ConnectionOptions
-  queue: QueueOptions
-  worker: WorkerOptions
+  queue: QueueOptions | {}
+  worker: WorkerOptions | {}
   jobs: JobsOptions
 }
 

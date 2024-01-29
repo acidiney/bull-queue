@@ -1,5 +1,6 @@
 import { configProvider } from '@adonisjs/core'
 import { BaseCommand, flags } from '@adonisjs/core/ace'
+import { CommandOptions } from '@adonisjs/core/types/ace'
 
 export default class QueueListener extends BaseCommand {
   static commandName = 'queue:clear'
@@ -8,9 +9,9 @@ export default class QueueListener extends BaseCommand {
   @flags.array({ alias: 'q', description: 'The queue(s) to clear' })
   queue: string[] = []
 
-  static settings = {
-    loadApp: true,
-    stayAlive: false,
+  static options: CommandOptions = {
+    startApp: true,
+    staysAlive: false,
   }
 
   async run() {

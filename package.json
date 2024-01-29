@@ -1,7 +1,7 @@
 {
   "name": "@acidiney/bull-queue",
   "description": "",
-  "version": "0.0.5",
+  "version": "0.0.6-beta.2",
   "engines": {
     "node": ">=18.16.0"
   },
@@ -10,6 +10,7 @@
     "build/src",
     "build/providers",
     "build/commands",
+    "build/services",
     "build/stubs",
     "build/configure.js",
     "build/configure.d.ts",
@@ -22,7 +23,7 @@
     "./types": "./build/src/types.js",
     "./queue": "./build/src/queue.js",
     "./queue_provider": "./build/providers/queue_provider.js",
-    "./services/main": "./build/services/queue.js"
+    "./services/queue  ": "./build/services/queue.js"
   },
   "scripts": {
     "clean": "del-cli build",

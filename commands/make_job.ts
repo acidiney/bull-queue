@@ -1,3 +1,4 @@
+import { CommandOptions } from '@adonisjs/core/types/ace'
 import { stubsRoot } from '../stubs/main.js'
 import { BaseCommand, args } from '@adonisjs/core/ace'
 
@@ -8,9 +9,9 @@ export default class MakeJob extends BaseCommand {
   @args.string({ description: 'Name of the job class' })
   name!: string
 
-  static settings = {
-    loadApp: true,
-    stayAlive: false,
+  static options: CommandOptions = {
+    startApp: true,
+    staysAlive: false,
   }
 
   async run() {

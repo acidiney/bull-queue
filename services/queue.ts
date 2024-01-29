@@ -7,7 +7,7 @@ let queue: BullManager
  * Returns a singleton instance of the Auth manager class
  */
 await app.booted(async () => {
-  queue = await app.container.make('adonis_queue')
+  queue = await app.container.make('bull_queue')
 })
 
 export { queue as default }
