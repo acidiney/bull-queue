@@ -14,7 +14,7 @@ export default class QueueListener extends BaseCommand {
   }
 
   async run() {
-    const Queue = await this.app.container.make('@acidiney/bull-queue')
+    const Queue = await this.app.container.make('bull_queue')
     const queueConfigProvider = await this.app.config.get('queue')
     const config = await configProvider.resolve<any>(this.app, queueConfigProvider)
 

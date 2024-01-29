@@ -1,10 +1,4 @@
-{
-  {
-    {
-      exports({ to: app.configPath('queue.ts') })
-    }
-  }
-}
+{{{ exports({ to: app.configPath('queue.ts') }) }}}
 
 import env from '#start/env'
 import { defineConfig } from '@acidiney/adonis-queue'
