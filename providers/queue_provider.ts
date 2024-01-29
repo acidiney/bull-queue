@@ -9,7 +9,7 @@ import { configProvider } from '@adonisjs/core'
  */
 declare module '@adonisjs/core/types' {
   export interface ContainerBindings {
-    '@acidiney/bull-queue': BullManager
+    bull_queue: BullManager
   }
 }
 
@@ -20,7 +20,7 @@ export default class TwoFactorAuthProvider {
    * Register bindings to the container
    */
   register() {
-    this.app.container.singleton('@acidiney/bull-queue', async (resolver) => {
+    this.app.container.singleton('bull_queue', async (resolver) => {
       const queueConfigProvider = await this.app.config.get('queue')
       const config = await configProvider.resolve<any>(this.app, queueConfigProvider)
 
