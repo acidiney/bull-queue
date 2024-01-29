@@ -10,7 +10,6 @@
     "build/src",
     "build/providers",
     "build/commands",
-    "build/services",
     "build/stubs",
     "build/configure.js",
     "build/configure.d.ts",
@@ -22,8 +21,7 @@
     "./commands": "./build/commands/main.js",
     "./types": "./build/src/types.js",
     "./queue": "./build/src/queue.js",
-    "./queue_provider": "./build/providers/queue_provider.js",
-    "./services/queue  ": "./build/services/queue.js"
+    "./queue_provider": "./build/providers/queue_provider.js"
   },
   "scripts": {
     "clean": "del-cli build",

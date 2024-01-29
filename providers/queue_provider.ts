@@ -20,7 +20,7 @@ export default class TwoFactorAuthProvider {
    * Register bindings to the container
    */
   register() {
-    this.app.container.singleton(BullManager, async (resolver) => {
+    this.app.container.singleton('bull_queue', async (resolver) => {
       const queueConfigProvider = await this.app.config.get('queue')
       const config = await configProvider.resolve<any>(this.app, queueConfigProvider)
 
@@ -35,5 +35,9 @@ export default class TwoFactorAuthProvider {
 
       return new BullManager(config, logger, app)
     })
+  }
+
+  async boot() {
+    await this.app.container.make('bull_queue')
   }
 }
