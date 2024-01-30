@@ -21,9 +21,9 @@
     ".": "./build/index.js",
     "./commands": "./build/commands/main.js",
     "./types": "./build/src/types.js",
-    "./queue": "./build/src/queue.js",
+    "./bull_manager": "./build/src/bull_manager.js",
     "./queue_provider": "./build/providers/queue_provider.js",
-    "./services/main": "./build/services/queue.js"
+    "./services/main": "./build/services/main.js"
   },
   "scripts": {
     "clean": "del-cli build",

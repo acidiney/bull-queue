@@ -1,5 +1,5 @@
 import app from '@adonisjs/core/services/app'
-import { BullManager } from '../src/queue.js'
+import { BullManager } from '../src/bull_manager.js'
 
 let queue: BullManager
 

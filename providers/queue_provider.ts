@@ -1,6 +1,6 @@
 import type { ApplicationService } from '@adonisjs/core/types'
 
-import { BullManager } from '../src/queue.js'
+import { BullManager } from '../src/bull_manager.js'
 import { RuntimeException } from '@adonisjs/core/exceptions'
 import { configProvider } from '@adonisjs/core'
 
