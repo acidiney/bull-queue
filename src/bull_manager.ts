@@ -7,7 +7,6 @@ import { ContainerBindings } from '@adonisjs/core/types'
 
 import { createBullBoard } from '@bull-board/api'
 import { BullAdapter } from '@bull-board/api/bullAdapter.js'
-import { createServer } from 'node:http'
 import { BullBoardAdapter } from './bull_board_adapter.js'
 import { Router } from '@adonisjs/core/http'
 

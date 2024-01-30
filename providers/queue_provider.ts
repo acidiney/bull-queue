@@ -22,7 +22,6 @@ export default class QueueProvider {
   register() {
     this.app.container.singleton('bull_queue', async (resolver) => {
       const queueConfigProvider = await this.app.config.get('queue')
-      const { default: router } = await import('@adonisjs/core/services/router')
       const config = await configProvider.resolve<any>(this.app, queueConfigProvider)
 
       if (!config) {
@@ -33,6 +32,7 @@ export default class QueueProvider {
 
       const logger = await resolver.make('logger')
       const app = await resolver.make('app')
+      const router = await resolver.make('router')
 
       return new BullManager(config, logger, app, router)
     })
