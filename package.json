@@ -42,8 +42,14 @@
     "version": "npm run build",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "adonisjs",
+    "bull",
+    "h3",
+    "bull-board",
+    "A bull management adapter to adonis v6"
+  ],
+  "author": "Acidiney Dias <acidineydias@gmail.com>",
   "license": "MIT",
   "main": "./build/index.js",
   "devDependencies": {
