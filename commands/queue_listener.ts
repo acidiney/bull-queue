@@ -16,6 +16,9 @@ export default class QueueListener extends BaseCommand {
   @flags.array({ alias: 'q', description: 'The queue(s) to listen on' })
   queue: string[] = []
 
+  @flags.number({ alias: 'p', description: 'The application port' })
+  port: number = 9999
+
   static options: CommandOptions = {
     startApp: true,
     staysAlive: true,
@@ -31,12 +34,6 @@ export default class QueueListener extends BaseCommand {
 
     if (!this.queue || this.queue.length === 0) this.queue = config.queueNames
 
-    await Promise.all(
-      this.queue.map((queue) =>
-        Queue.process({
-          queueName: queue,
-        })
-      )
-    )
+    await Queue.ui(this.port || 9999, this.queue)
   }
 }

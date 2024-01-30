@@ -5,6 +5,12 @@ import type { Application } from '@adonisjs/core/app'
 import type { DataForJob, JobHandlerContract, JobsList, QueueConfig } from './types.js'
 import { ContainerBindings } from '@adonisjs/core/types'
 
+import { createBullBoard } from '@bull-board/api'
+import { BullAdapter } from '@bull-board/api/bullAdapter.js'
+import { H3Adapter } from '@bull-board/h3'
+import { createApp, createRouter, toNodeListener } from 'h3'
+import { createServer } from 'node:http'
+
 export class BullManager {
   private queues: Map<string, Queue> = new Map()
 
@@ -108,5 +114,34 @@ export class BullManager {
     }
 
     return this.queues.get(queueName)
+  }
+
+  async ui(port = 9999, queue: string[]) {
+    const serverAdapter = new H3Adapter()
+    serverAdapter.setBasePath('/ui')
+
+    const app = createApp()
+
+    const h3Router = createRouter()
+
+    const bullQueue = await this.app.container.make('bull_queue')
+
+    const queues = [...bullQueue.list().values()].map((q) => new BullAdapter(q))
+
+    await createBullBoard({
+      queues,
+      serverAdapter,
+    })
+
+    app.use(h3Router)
+    app.use(serverAdapter.registerHandlers())
+
+    await queue.map((q) =>
+      this.process({
+        queueName: q,
+      })
+    )
+
+    await createServer(toNodeListener(app)).listen(port)
   }
 }
