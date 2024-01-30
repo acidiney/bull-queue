@@ -72,7 +72,7 @@ export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripe
     // ...
   }
 
-  public static instance (): string {
+  public static inject (): string {
     app.container.singleton('RegisterStripeCustomer', () => new RegisterStripeCustomer())
 
     return 'RegisterStripeCustomer'
@@ -80,9 +80,9 @@ export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripe
 }
 ```
 
-### The instance method
+### The inject method
 
-We need to make an IoC instance of RegisterStripeCustomer, not necessary you need to use it in there, but you will need to do it.
+We need to make an IoC inject of `RegisterStripeCustomer`, not necessary you need to use it in there, but you will need to do it.
 
 Now we can `dispatch` an eg.
 
