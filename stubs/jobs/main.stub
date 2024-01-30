@@ -8,6 +8,7 @@
   })
 }}}
 
+import app from '@adonisjs/core/services/app'
 import type { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
 
 export type {{ name }}Payload = {}
@@ -24,7 +25,7 @@ export class {{ name }}Job implements JobHandlerContract<{{ name }}Payload> {
    */
   async failed() {}
 
-  public static instance (): '{{ name }}Job' {
+  static instance (): '{{ name }}Job' {
     app.container.singleton('{{ name }}Job', () => new {{ name }}Job())
 
     return '{{ name }}Job'
@@ -33,6 +34,6 @@ export class {{ name }}Job implements JobHandlerContract<{{ name }}Payload> {
 
 declare module '@adonisjs/core/types' {
   interface ContainerBindings {
-    '{{ name }}Job': {{ name }}Job
+    {{ name }}Job: {{ name }}Job
   }
 }
