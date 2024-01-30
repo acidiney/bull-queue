@@ -29,7 +29,7 @@ export default class QueueListener extends BaseCommand {
     const router = await this.app.container.make('router')
     router.commit()
 
-    if (this.queue.length === 0) this.queue = config.queueNames
+    if (!this.queue || this.queue.length === 0) this.queue = config.queueNames
 
     await Promise.all(
       this.queue.map((queue) =>

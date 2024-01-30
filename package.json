@@ -23,7 +23,7 @@
     "./types": "./build/src/types.js",
     "./queue": "./build/src/queue.js",
     "./queue_provider": "./build/providers/queue_provider.js",
-    "./services/queue": "./build/services/queue.js"
+    "./services/main": "./build/services/queue.js"
   },
   "scripts": {
     "clean": "del-cli build",

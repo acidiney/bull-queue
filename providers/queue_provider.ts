@@ -13,7 +13,7 @@ declare module '@adonisjs/core/types' {
   }
 }
 
-export default class TwoFactorAuthProvider {
+export default class QueueProvider {
   constructor(protected app: ApplicationService) {}
 
   /**

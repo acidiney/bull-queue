@@ -8,5 +8,6 @@ export function defineConfig(config: QueueConfig): ConfigProvider<QueueConfig> {
     queue: config.queue,
     worker: config.worker,
     jobs: config.jobs,
+    queueNames: config.queueNames,
   }))
 }

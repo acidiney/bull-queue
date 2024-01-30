@@ -44,6 +44,5 @@ connection: {
     removeOnComplete: 100,
     removeOnFail: 100
   }
+  queueNames: ['default']
 })
-
-export const queueNames:['default'] = ['default']

@@ -19,7 +19,7 @@ export default class QueueListener extends BaseCommand {
     const queueConfigProvider = await this.app.config.get('queue')
     const config = await configProvider.resolve<any>(this.app, queueConfigProvider)
 
-    if (this.queue.length === 0) this.queue = config.queueNames
+    if (!this.queue || this.queue.length === 0) this.queue = config.queueNames
 
     await Promise.all(
       this.queue.map(async (queue) => {
