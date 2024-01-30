@@ -44,7 +44,8 @@ connection: {
     removeOnComplete: 100,
     removeOnFail: 100
   }
-  queueNames: ['default']
+  queueNames: ['default'],
+  queuePrefix: '@bull-"
 })
 
 declare module '@adonisjs/core/types' {

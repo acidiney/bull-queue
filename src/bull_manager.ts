@@ -20,12 +20,16 @@ export class BullManager {
     private app: Application<ContainerBindings>
   ) {
     this.queues.set(
-      '@bull-default',
-      new Queue('@bull-default', {
+      this.prefix('default'),
+      new Queue(this.prefix('default'), {
         ...this.options.queue,
         connection: this.options.connection,
       })
     )
+  }
+
+  prefix(queueName: string): string {
+    return this.options.queuePrefix + queueName.replace(this.options.queuePrefix, '')
   }
 
   dispatch<K extends keyof JobsList | string>(
@@ -33,7 +37,7 @@ export class BullManager {
     payload: DataForJob<K>,
     options: JobsOptions & { queueName?: string } = {}
   ) {
-    const queueName = '@bull-' + (options.queueName || 'default')
+    const queueName = this.prefix(options.queueName || 'default')
 
     if (!this.queues.has(queueName)) {
       this.queues.set(
@@ -51,11 +55,13 @@ export class BullManager {
     })
   }
 
-  process({ queueName }: { queueName?: string }) {
-    this.logger.info(`Queue [${queueName || 'default'}] processing started...`)
+  process({ queueName: _queueName }: { queueName?: string }) {
+    let queueName = this.prefix(_queueName || 'default')
+
+    this.logger.info(`Queue [${queueName}] processing started...`)
 
     let worker = new Worker(
-      queueName || '@bull-default',
+      queueName,
       async (job) => {
         let jobHandler: JobHandlerContract<any>
 
@@ -93,7 +99,8 @@ export class BullManager {
   }
 
   async clear<K extends string>(_queueName: K) {
-    let queueName = '@bull-' + _queueName
+    let queueName = this.prefix(_queueName)
+
     if (!this.queues.has(queueName)) {
       return this.logger.info(`Queue [${queueName}] doesn't exist`)
     }
@@ -109,7 +116,9 @@ export class BullManager {
     return this.queues
   }
 
-  get<K extends string>(queueName: K) {
+  get<K extends string>(_queueName: K) {
+    let queueName = this.prefix(_queueName)
+
     if (!this.queues.has(queueName)) {
       return this.logger.info(`Queue [${queueName}] doesn't exist`)
     }
