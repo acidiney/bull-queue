@@ -43,6 +43,11 @@ connection: {
     */
     removeOnComplete: 100,
     removeOnFail: 100
-  }
+  },
   queueNames: ['default']
 })
+
+declare module '@adonisjs/core/types' {
+  interface ContainerBindings {
+  }
+}

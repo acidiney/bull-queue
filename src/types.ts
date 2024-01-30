@@ -27,7 +27,7 @@ export type QueueConfig = {
   queue: QueueOptions | {}
   worker: WorkerOptions | {}
   jobs: JobsOptions
-  queueNames: ['default', string]
+  queueNames: [string]
 }
 
 export interface QueueContract {
