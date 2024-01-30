@@ -57,10 +57,10 @@ export class BullManager {
     let worker = new Worker(
       queueName || 'default',
       async (job) => {
-        let jobHandler: JobHandlerContract
+        let jobHandler: JobHandlerContract<any>
 
         try {
-          jobHandler = await this.app.container.make(job.name, [job])
+          jobHandler = await this.app.container.make(job.name)
         } catch (e) {
           this.logger.error(`Job handler for ${job.name} not found`)
           return
@@ -68,7 +68,7 @@ export class BullManager {
 
         this.logger.info(`Job ${job.name} started`)
 
-        await jobHandler.handle(job.data)
+        await jobHandler.handle(job)
         this.logger.info(`Job ${job.name} finished`)
       },
       {
@@ -84,8 +84,8 @@ export class BullManager {
       // This can occur if worker maxStalledCount has been reached and the removeOnFail is set to true.
       if (job && (job.attemptsMade === job.opts.attempts || job.finishedOn)) {
         // Call the failed method of the handler class if there is one
-        let jobHandler: JobHandlerContract = await this.app.container.make(job.name, [job])
-        if (typeof jobHandler.failed === 'function') await jobHandler.failed()
+        let jobHandler: JobHandlerContract<any> = await this.app.container.make(job.name)
+        if (typeof jobHandler.failed === 'function') await jobHandler.failed(job)
       }
     })
 

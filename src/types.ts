@@ -47,9 +47,9 @@ export interface QueueContract {
   get(): Promise<BullQueue>
 }
 
-export interface JobHandlerContract {
-  handle(payload: any): Promise<void>
-  failed(): Promise<void>
+export interface JobHandlerContract<T> {
+  handle(job: Job<T>): Promise<void>
+  failed(job: Job<T>): Promise<void>
 }
 
 /**
