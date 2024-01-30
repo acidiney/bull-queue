@@ -1,6 +1,6 @@
 {{#var jobName = generators.modelName(job.name)}}
 {{#var jobFileName = generators.modelFileName(job.name)}}
-{{#var name = string.toPascalCase(job.name)}}
+{{#var name = string(job.name).pascalCase()}}
 
 {{{
   exports({
@@ -17,10 +17,10 @@ export default class implements JobHandlerContract<{{ name }}Payload> {
   /**
    * Base Entry point
    */
-  public async handle(payload: Job<{{ name }}Payload>) {}
+  async handle(payload: Job<{{ name }}Payload>) {}
 
   /**
    * This is an optional method that gets called if it exists when the retries has exceeded and is marked failed.
    */
-  public async failed() {}
+  async failed() {}
 }
