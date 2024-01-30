@@ -72,7 +72,7 @@ export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripe
     // ...
   }
 
-  public static inject (): string {
+  public static instance (): 'RegisterStripeCustomer' {
     app.container.singleton('RegisterStripeCustomer', () => new RegisterStripeCustomer())
 
     return 'RegisterStripeCustomer'
@@ -95,7 +95,7 @@ import { RegisterStripeCustomer } from '#app/jobs/register_stripe_customer.js'
 
 await app.booted(async () => {
   bull.dispatch(
-    RegisterStripeCustomer.inject(),
+    RegisterStripeCustomer.instance(),
     {},
   )
 })
