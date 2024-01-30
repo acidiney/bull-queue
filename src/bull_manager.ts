@@ -9,6 +9,7 @@ import { createBullBoard } from '@bull-board/api'
 import { BullAdapter } from '@bull-board/api/bullAdapter.js'
 import { BullBoardAdapter } from './bull_board_adapter.js'
 import { Router } from '@adonisjs/core/http'
+import { Ignitor, prettyPrintError } from '@adonisjs/core'
 
 export class BullManager {
   private queues: Map<string, Queue> = new Map()
@@ -134,5 +135,26 @@ export class BullManager {
         queueName: q,
       })
     }
+
+    const APP_ROOT = new URL('../', import.meta.url)
+
+    const IMPORTER = (filePath: string) => {
+      if (filePath.startsWith('./') || filePath.startsWith('../')) {
+        return import(new URL(filePath, APP_ROOT).href)
+      }
+      return import(filePath)
+    }
+
+    new Ignitor(APP_ROOT, { importer: IMPORTER })
+      .tap((app) => {
+        app.listen('SIGTERM', () => app.terminate())
+        app.listenIf(app.managedByPm2, 'SIGINT', () => app.terminate())
+      })
+      .httpServer()
+      .start()
+      .catch((error) => {
+        process.exitCode = 1
+        prettyPrintError(error)
+      })
   }
 }
