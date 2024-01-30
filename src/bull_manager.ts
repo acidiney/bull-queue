@@ -20,8 +20,8 @@ export class BullManager {
     private app: Application<ContainerBindings>
   ) {
     this.queues.set(
-      'default',
-      new Queue('default', {
+      '@bull-default',
+      new Queue('@bull-default', {
         ...this.options.queue,
         connection: this.options.connection,
       })
@@ -33,7 +33,7 @@ export class BullManager {
     payload: DataForJob<K>,
     options: JobsOptions & { queueName?: string } = {}
   ) {
-    const queueName = options.queueName || 'default'
+    const queueName = '@bull-' + (options.queueName || 'default')
 
     if (!this.queues.has(queueName)) {
       this.queues.set(
@@ -55,7 +55,7 @@ export class BullManager {
     this.logger.info(`Queue [${queueName || 'default'}] processing started...`)
 
     let worker = new Worker(
-      queueName || 'default',
+      queueName || '@bull-default',
       async (job) => {
         let jobHandler: JobHandlerContract<any>
 
@@ -92,7 +92,8 @@ export class BullManager {
     return this
   }
 
-  async clear<K extends string>(queueName: K) {
+  async clear<K extends string>(_queueName: K) {
+    let queueName = '@bull-' + _queueName
     if (!this.queues.has(queueName)) {
       return this.logger.info(`Queue [${queueName}] doesn't exist`)
     }
