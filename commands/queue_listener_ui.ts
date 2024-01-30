@@ -10,11 +10,14 @@ import { BaseCommand, flags } from '@adonisjs/core/ace'
 import { CommandOptions } from '@adonisjs/core/types/ace'
 
 export default class QueueListener extends BaseCommand {
-  static commandName = 'queue:listen'
+  static commandName = 'queue:listen:ui'
   static description = 'Listen to one or multiple queues'
 
   @flags.array({ alias: 'q', description: 'The queue(s) to listen on' })
   queue: string[] = []
+
+  @flags.number({ alias: 'p', description: 'The application port' })
+  port: number = 9999
 
   static options: CommandOptions = {
     startApp: true,
@@ -31,10 +34,6 @@ export default class QueueListener extends BaseCommand {
 
     if (!this.queue || this.queue.length === 0) this.queue = config.queueNames
 
-    this.queue.map((q) =>
-      Queue.process({
-        queueName: q,
-      })
-    )
+    await Queue.ui(this.port || 9999, this.queue)
   }
 }

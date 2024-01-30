@@ -136,11 +136,11 @@ export class BullManager {
     app.use(h3Router)
     app.use(serverAdapter.registerHandlers())
 
-    await queue.map((q) =>
-      this.process({
+    for (const q of queue) {
+      await this.process({
         queueName: q,
       })
-    )
+    }
 
     await createServer(toNodeListener(app)).listen(port)
   }
