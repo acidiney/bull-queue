@@ -6,7 +6,7 @@ let queue: BullManager
 /**
  * Returns a singleton instance of the Auth manager class
  */
-await app.booting(async () => {
+await app.booted(async () => {
   queue = await app.container.make('bull_queue')
 })
 
