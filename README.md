@@ -159,6 +159,12 @@ node ace queue:listen --queue=stripe,cloudflare
 # or
 
 node ace queue:listen:ui
+# default port is 9999 -> localhost:9999/ui
+
+
+# or
+
+node ace queue:listen:ui --port=3939
 
 or 
 node ace queue:listen:ui --queue=stripe
