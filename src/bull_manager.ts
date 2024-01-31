@@ -153,5 +153,6 @@ export class BullManager {
     }
 
     await createServer(toNodeListener(app)).listen(port)
+    this.logger.info(`BullBoard started on port :${port}`)
   }
 }
