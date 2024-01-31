@@ -15,7 +15,6 @@
     - [Running the Queue Worker](#running-the-queue-worker)
 5. [Typings](#typings)
 6. [Dependencies](#dependencies)
-7. [Job Structure](#job-structure)
 
 ## Installation <a id="installation"></a>
 
@@ -38,13 +37,9 @@ node ace configure @acidiney/bull-queue
 ### Job Dispatching <a id="job-dispatching"></a>
 
 Utilize the `dispatch` method provided by the `bull` provider to enqueue jobs.
-
-### Job Creation <a id="job-creation"></a>
-
-Generate new job classes using the `node ace make:job {job}` command.
-
 Example:
 ```typescript
+import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
 import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
 
@@ -54,6 +49,49 @@ await app.booted(async () => {
     { userId: '123456' } as RegisterStripeCustomerPayload,
   )
 })
+```
+### Job Creation <a id="job-creation"></a>
+
+Generate new job classes using the `node ace make:job {job}` command.
+
+Example:
+```typescript
+
+// app/jobs/register_stripe_customer.ts
+import app from '@adonisjs/core/services/app'
+import { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
+
+export type RegisterStripeCustomerPayload = {
+  userId: string;
+};
+
+export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripeCustomerPayload> {
+
+  public async handle(job: Job<RegisterStripeCustomerPayload>) {
+    // Logic to register a Stripe customer
+    const { userId } = job.data;
+    // Perform Stripe registration process
+  }
+
+  public async failed(job: Job<RegisterStripeCustomerPayload>) {
+    // Logic to handle failed job attempts
+    const { userId } = job.data;
+    // Send notification or log failure
+  }
+
+  public static instance (): 'RegisterStripeCustomer' {
+    app.container.singleton('RegisterStripeCustomer', () => new RegisterStripeCustomer())
+
+    return 'RegisterStripeCustomer'
+  }
+}
+
+// Define payload types for jobs in the `config/queue.ts` file to ensure type safety and consistency.
+declare module '@adonisjs/core/types' {
+  interface ContainerBindings {
+    RegisterStripeCustomer: RegisterStripeCustomer
+  }
+}
 ```
 
 ### Job Lifecycle <a id="job-lifecycle"></a>
