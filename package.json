@@ -1,7 +1,7 @@
 {
   "name": "@acidiney/bull-queue",
   "description": "",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "engines": {
     "node": ">=18.16.0"
   },
