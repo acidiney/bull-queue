@@ -13,7 +13,6 @@
 4. [Advanced Features](#advanced-features)
     - [Job Attempts and Retries](#job-attempts-and-retries)
     - [Running the Queue Worker](#running-the-queue-worker)
-5. [Typings](#typings)
 6. [Dependencies](#dependencies)
 
 ## Installation <a id="installation"></a>
@@ -128,47 +127,6 @@ node ace queue:listen:ui --queue=stripe
 ```
 
 This command starts the queue worker and launches the UI for convenient management and monitoring of your queues.
-
-## Typings <a id="typings"></a>
-
-Define payload types for jobs in the `config/queue.ts` file to ensure type safety and consistency.
-
-```typescript
-// app/jobs/register_stripe_customer.ts
-import { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
-
-export type RegisterStripeCustomerPayload = {
-  userId: string;
-};
-
-export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripeCustomerPayload> {
-
-  public async handle(job: Job<RegisterStripeCustomerPayload>) {
-    // Logic to register a Stripe customer
-    const { userId } = job.data;
-    // Perform Stripe registration process
-  }
-
-  public async failed(job: Job<RegisterStripeCustomerPayload>) {
-    // Logic to handle failed job attempts
-    const { userId } = job.data;
-    // Send notification or log failure
-  }
-
-  public static instance (): 'RegisterStripeCustomer' {
-    app.container.singleton('RegisterStripeCustomer', () => new RegisterStripeCustomer())
-
-    return 'RegisterStripeCustomer'
-  }
-}
-
-// Define payload types for jobs in the `config/queue.ts` file to ensure type safety and consistency.
-declare module '@adonisjs/core/types' {
-  interface ContainerBindings {
-    RegisterStripeCustomer: RegisterStripeCustomer
-  }
-}
-```
 
 ## Dependencies <a id="dependencies"></a>
 
