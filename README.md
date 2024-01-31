@@ -1,61 +1,63 @@
 # @acidiney/bull-queue
 
-`@acidiney/bull-queue` is a queue system based on [BullMQ](https://github.com/taskforcesh/bullmq)
-for [AdonisJS](https://adonisjs.com/).
+`@acidiney/bull-queue` is a powerful queue system designed specifically for AdonisJS applications, leveraging the reliability and scalability of BullMQ, a Redis-based queue for Node.js. Derived from `@rlanz/bull-queue`, it offers enhanced functionality tailored to AdonisJS's ecosystem.
 
-> **Note**
->
-> You must have a Redis server running on your machine.
->
-> It's is a fork from [@rlanz/bull-queue](https://github.com/RomainLanz/adonis-bull-queue)
+## Table of Contents
 
----
+1. [Installation](#installation)
+2. [Configuration](#configuration)
+3. [Usage](#usage)
+    - [Job Dispatching](#job-dispatching)
+    - [Job Creation](#job-creation)
+    - [Job Lifecycle](#job-lifecycle)
+4. [Advanced Features](#advanced-features)
+    - [Job Attempts and Retries](#job-attempts-and-retries)
+    - [Running the Queue Worker](#running-the-queue-worker)
+6. [Dependencies](#dependencies)
 
-## Getting Started
+## Installation <a id="installation"></a>
 
-This package is available in the npm registry.
+Begin by installing `@acidiney/bull-queue` using npm:
 
 ```bash
 npm install @acidiney/bull-queue
 ```
 
-Next, configure the package by running the following command.
+## Configuration <a id="configuration"></a>
+
+After installation, configure the package to adapt it to your AdonisJS project:
 
 ```bash
 node ace configure @acidiney/bull-queue
 ```
 
-and... Voilà!
+## Usage <a id="usage"></a>
 
-## Usage
+### Job Dispatching <a id="job-dispatching"></a>
 
-The `bull` provider gives you access to the `dispatch` method.
-It will dispatch the linked job to the queue with the given payload.
-
-```ts
+Utilize the `dispatch` method provided by the `bull` provider to enqueue jobs.
+Example:
+```typescript
+import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
+import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
+
+await app.booted(async () => {
+  bull.dispatch(
+    RegisterStripeCustomer.instance(),
+    { userId: '123456' } as RegisterStripeCustomerPayload,
+  )
+})
 ```
+### Job Creation <a id="job-creation"></a>
 
-> **Note**
->
-> The `bull` instance will exist only when application is `booted`
->
-> If you need to run `bull` outside of the application lifecycle... You will need to run `app.booted`
->
-> Hint: You can find `app` in `@adonisjs/core/services/app`
+Generate new job classes using the `node ace make:job {job}` command.
 
-You can create a job by running `node ace make:job {job}`.
-This will create the job within your `app/jobs` directory.
+Example:
+```typescript
 
-The `handle` method is what gets called when the jobs is processed while
-the `failed` method is called when the max attempts of the job has been reached.
-
-Since the job instance is passed to the method, you can easily send notifications with the `failed` method. See [this page](https://api.docs.bullmq.io/classes/Job.html) for full documentation on the job instance.
-
-Example job file:
-
-```ts
 // app/jobs/register_stripe_customer.ts
+import app from '@adonisjs/core/services/app'
 import { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
 
 export type RegisterStripeCustomerPayload = {
@@ -65,11 +67,15 @@ export type RegisterStripeCustomerPayload = {
 export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripeCustomerPayload> {
 
   public async handle(job: Job<RegisterStripeCustomerPayload>) {
-    // ...
+    // Logic to register a Stripe customer
+    const { userId } = job.data;
+    // Perform Stripe registration process
   }
 
   public async failed(job: Job<RegisterStripeCustomerPayload>) {
-    // ...
+    // Logic to handle failed job attempts
+    const { userId } = job.data;
+    // Send notification or log failure
   }
 
   public static instance (): 'RegisterStripeCustomer' {
@@ -78,108 +84,8 @@ export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripe
     return 'RegisterStripeCustomer'
   }
 }
-```
 
-### The inject method
-
-We need to make an IoC inject of `RegisterStripeCustomer`, not necessary you need to use it in there, but you will need to do it.
-
-Now we can `dispatch` an eg.
-
-```ts
-// test_relay_service.ts
-import app from '@adonisjs/core/services/app'
-import bull from '@acidiney/bull-queue/services/main'
-
-import { RegisterStripeCustomer } from '#app/jobs/register_stripe_customer.js'
-
-await app.booted(async () => {
-  bull.dispatch(
-    RegisterStripeCustomer.instance(),
-    {},
-  )
-})
-
-```
-
-#### Job Attempts
-
-By default, all jobs have a retry of 3 and this is set within your `config/queue.ts` under the `jobs` object.
-
-You can also set the attempts on a call basis by passing the overide as shown below:
-
-```ts
-bull.dispatch('RegisterStripeCustomer', {...}, { attempts: 3 })
-```
-
-#### Delayed retries
-
-If you need to add delays inbetween retries, you can either set it globally via by adding this to your `config/queue.ts`:
-
-```ts
-// config/queue.ts
-  ...
-  jobs: {
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 5000,
-    },
-  }
-```
-
-Or... you can also do it per job:
-
-```ts
-Queue.dispatch('RegisterStripeCustomer', {...}, {
-  attempts: 3,
-  backoff: { type: 'exponential', delay: 5000 }
-})
-```
-
-With that configuration above, BullMQ will first add a 5s delay before the first retry, 20s before the 2nd, and 40s for the 3rd.
-
-You can visit [this page](https://docs.bullmq.io/guide/retrying-failing-jobs) on further explanation / other retry options.
-
-#### Running the queue
-
-Run the queue worker with the following ace command:
-
-```bash
-node ace queue:listen
-
-# or
-
-node ace queue:listen --queue=stripe
-
-# or
-
-node ace queue:listen --queue=stripe,cloudflare
-
-# or
-
-node ace queue:listen:ui
-# default port is 9999 -> localhost:9999/ui
-
-
-# or
-
-node ace queue:listen:ui --port=3939
-
-or 
-node ace queue:listen:ui --queue=stripe
-
-```
-
-Once done, you will see the message `Queue processing started`.
-
-## Typings
-
-You can define the payload's type for a given job inside the `config/queue.ts` file.
-
-```ts
-import { RegisterStripeCustomer } from '#app/jobs/register_stripe_customer.js'
-
+// Define payload types for jobs in the `config/queue.ts` file to ensure type safety and consistency.
 declare module '@adonisjs/core/types' {
   interface ContainerBindings {
     RegisterStripeCustomer: RegisterStripeCustomer
@@ -187,13 +93,47 @@ declare module '@adonisjs/core/types' {
 }
 ```
 
-### Dependences
+### Job Lifecycle <a id="job-lifecycle"></a>
 
-```json
-  "dependencies": {
-    "@bull-board/api": "^5.14.0",
-    "@bull-board/h3": "^5.14.0",
-    "bullmq": "^5.1.5",
-    "h3": "^1.10.1"
-  }
+Define the `handle` method to execute job logic and the `failed` method to handle failed attempts.
+
+## Advanced Features <a id="advanced-features"></a>
+
+### Job Attempts and Retries <a id="job-attempts-and-retries"></a>
+
+- Customize the retry setting for jobs, configurable in the `config/queue.ts` file.
+- Adjust attempts and delays per job or globally.
+
+### Running the Queue Worker <a id="running-the-queue-worker"></a>
+
+Initiate the queue worker using the `node ace queue:listen` command.
+- Specify queues or run the UI for monitoring and managing queues.
+
+Example:
+```bash
+node ace queue:listen:ui
 ```
+
+By default, the UI will be accessible at `localhost:9999/ui`. You can specify a different port using the `--port` option:
+
+```bash
+node ace queue:listen:ui --port=3939
+```
+
+Additionally, you can specify the queues to listen to:
+
+```bash
+node ace queue:listen:ui --queue=stripe
+```
+
+This command starts the queue worker and launches the UI for convenient management and monitoring of your queues.
+
+## Dependencies <a id="dependencies"></a>
+
+- **@bull-board/api**: Provides API endpoints for monitoring and managing queues.
+- **@bull-board/h3**: UI components for Bull queue management.
+- **bullmq**: The core library for handling queues.
+- **h3**: A library for generating unique hash codes.
+
+# Author
+Acidiney Dias
