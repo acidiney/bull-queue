@@ -128,7 +128,7 @@ export class BullManager {
 
   async ui(port = 9999, queue: string[]) {
     const serverAdapter = new H3Adapter()
-    serverAdapter.setBasePath('/ui')
+    serverAdapter.setBasePath('/')
 
     const app = createApp()
 
