@@ -19,5 +19,7 @@ export default class MakeJob extends BaseCommand {
     await codemods.makeUsingStub(stubsRoot, 'jobs/main.stub', {
       job: this.app.generators.createEntity(this.name),
     })
+
+    return
   }
 }

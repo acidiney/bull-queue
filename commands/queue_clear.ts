@@ -26,5 +26,7 @@ export default class QueueListener extends BaseCommand {
         await Queue.clear(queue)
       })
     )
+
+    return
   }
 }

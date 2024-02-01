@@ -72,10 +72,10 @@ export class BullManager {
           return
         }
 
-        this.logger.info(`Job ${job.name} started`)
+        // this.logger.info(`Job ${job.name} started`)
 
         await jobHandler.handle(job)
-        this.logger.info(`Job ${job.name} finished`)
+        // this.logger.info(`Job ${job.name} finished`)
       },
       {
         ...this.options.worker,
