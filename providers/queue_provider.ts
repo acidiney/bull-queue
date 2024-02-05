@@ -36,8 +36,4 @@ export default class QueueProvider {
       return new BullManager(config, logger, app)
     })
   }
-
-  async boot() {
-    await this.app.container.make('bull_queue')
-  }
 }
