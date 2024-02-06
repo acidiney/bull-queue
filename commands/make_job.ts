@@ -20,6 +20,6 @@ export default class MakeJob extends BaseCommand {
       job: this.app.generators.createEntity(this.name),
     })
 
-    return
+    await this.app.terminate()
   }
 }

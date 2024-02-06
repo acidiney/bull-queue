@@ -40,11 +40,11 @@ Example:
 ```typescript
 import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
-import { RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
+import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
 
 await app.booted(async () => {
   bull.dispatch(
-    'RegisterStripeCustomer',
+    RegisterStripeCustomer.name,
     { userId: '123456' } as RegisterStripeCustomerPayload,
   )
 })
@@ -54,8 +54,7 @@ await app.booted(async () => {
 Generate new job classes using the `node ace make:job {job}` command.
 
 Example:
-```typescript
-
+```ts
 // app/jobs/register_stripe_customer.ts
 import app from '@adonisjs/core/services/app'
 import { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
@@ -78,26 +77,17 @@ export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripe
     // Send notification or log failure
   }
 }
+```
 
-// You need to declare the new job inside `start/jobs.ts` to be preload.
-import { RegisterStripeCustomer } from '#app/jobs/register_stripe_customer.js'
-
+Register the new job into `start/jobs.ts`
+```ts
+// start/jobs.ts
 const jobs: Record<string, Function> = {
-  [RegisterStripeCustomer.name]: () => new RegisterStripeCustomer(),
+  () => import('#app/jobs/register_stripe_customer.js'),
 }
 
 export { jobs }
-
-
-// Define payload types for jobs in the `config/queue.ts` file to ensure type safety and consistency.
-declare module '@adonisjs/core/types' {
-  interface ContainerBindings {
-    RegisterStripeCustomer: RegisterStripeCustomer
-  }
-}
 ```
-
-
 
 
 ### Job Lifecycle <a id="job-lifecycle"></a>
@@ -131,6 +121,24 @@ Additionally, you can specify the queues to listen to:
 
 ```bash
 node ace queue:listen:ui --queue=stripe
+```
+
+In case you want to start a custom queue, do not forget to name it when you `dispatching` it
+
+```ts
+import app from '@adonisjs/core/services/app'
+import bull from '@acidiney/bull-queue/services/main'
+import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
+
+await app.booted(async () => {
+  bull.dispatch(
+    RegisterStripeCustomer.name,
+    { userId: '123456' } as RegisterStripeCustomerPayload,
+    {
+      queueName: 'stripe'
+    }
+  )
+})
 ```
 
 This command starts the queue worker and launches the UI for convenient management and monitoring of your queues.

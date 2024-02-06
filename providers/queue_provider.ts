@@ -43,12 +43,18 @@ export default class QueueProvider {
     const jobNames = Object.keys(jobs)
 
     for (const job of jobNames) {
-      this.app.container.singleton<any>(job, jobs[job])
-      logger.info(`[@acidiney/bull-queue] ${job} loaded!`)
+      const jobModule = await jobs[job]
+
+      this.app.container.singleton<any>(job, jobModule)
+      logger.info(`[@acidiney/bull-queue]> ${job} loaded!`)
     }
   }
 
   async shutdown() {
+    const logger = await this.app.container.make('logger')
+
+    logger.info(`[@acidiney/bull-queue]> Shutting down!`)
+
     const bullQueue = await this.app.container.make('bull_queue')
 
     bullQueue.list().forEach(async (queue) => {

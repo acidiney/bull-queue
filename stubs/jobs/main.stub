@@ -24,16 +24,4 @@ export class {{ name }}Job implements JobHandlerContract<{{ name }}Payload> {
    * This is an optional method that gets called if it exists when the retries has exceeded and is marked failed.
    */
   async failed() {}
-
-  static instance (): '{{ name }}Job' {
-    app.container.singleton('{{ name }}Job', () => new {{ name }}Job())
-
-    return '{{ name }}Job'
-  }
-}
-
-declare module '@adonisjs/core/types' {
-  interface ContainerBindings {
-    {{ name }}Job: {{ name }}Job
-  }
 }
