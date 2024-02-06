@@ -41,7 +41,7 @@ export default class QueueProvider {
   async boot() {
     const files = await fs.readdir(this.app.startPath())
 
-    const jobFile = files.find((e) => /^jobs/.test(e))
+    const jobFile = files.find((e) => /^jobs\.(ts|js)$/.test(e))
 
     if (!jobFile) {
       throw new Error('[@acidiney/bull-queue]> #start/job file missing!')
