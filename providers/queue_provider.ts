@@ -3,6 +3,7 @@ import type { ApplicationService } from '@adonisjs/core/types'
 import { BullManager } from '../src/bull_manager.js'
 import { RuntimeException } from '@adonisjs/core/exceptions'
 import { configProvider } from '@adonisjs/core'
+import fs from 'node:fs/promises'
 
 /**
  * Extending AdonisJS types
@@ -38,12 +39,24 @@ export default class QueueProvider {
   }
 
   async boot() {
-    const { jobs } = await import(this.app.startPath('jobs.ts'))
+    const files = await fs.readdir(this.app.startPath())
+
+    const jobFile = files.find((e) => /^jobs/.test(e))
+
+    if (!jobFile) {
+      throw new Error('[@acidiney/bull-queue]> #start/job file missing!')
+    }
+
+    const { jobs } = await import(this.app.startPath(jobFile))
     const logger = await this.app.container.make('logger')
     const jobNames = Object.keys(jobs)
 
     for (const job of jobNames) {
       const { default: jobModule } = await jobs[job]()
+
+      if (!jobModule) {
+        throw new Error(`[@acidiney/bull-queue]> ${job} export default missing!`)
+      }
 
       this.app.container.singleton<any>(job, () => new jobModule())
 
