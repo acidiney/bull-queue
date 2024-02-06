@@ -63,7 +63,7 @@ export type RegisterStripeCustomerPayload = {
   userId: string;
 };
 
-export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripeCustomerPayload> {
+export default class RegisterStripeCustomer implements JobHandlerContract<RegisterStripeCustomerPayload> {
 
   public async handle(job: Job<RegisterStripeCustomerPayload>) {
     // Logic to register a Stripe customer

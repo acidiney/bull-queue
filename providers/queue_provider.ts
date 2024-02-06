@@ -43,9 +43,10 @@ export default class QueueProvider {
     const jobNames = Object.keys(jobs)
 
     for (const job of jobNames) {
-      const jobModule = await jobs[job]
+      const { default: jobModule } = await jobs[job]()
 
-      this.app.container.singleton<any>(job, jobModule)
+      this.app.container.singleton<any>(job, () => new jobModule())
+
       logger.info(`[@acidiney/bull-queue]> ${job} loaded!`)
     }
   }

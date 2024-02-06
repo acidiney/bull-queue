@@ -13,7 +13,7 @@ import type { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
 
 export type {{ name }}Payload = {}
 
-export class {{ name }}Job implements JobHandlerContract<{{ name }}Payload> {
+export default class {{ name }}Job implements JobHandlerContract<{{ name }}Payload> {
 
   /**
    * Base Entry point
