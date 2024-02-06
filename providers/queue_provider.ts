@@ -36,4 +36,12 @@ export default class QueueProvider {
       return new BullManager(config, logger, app)
     })
   }
+
+  async shutdown() {
+    const bullQueue = await this.app.container.make('bull_queue')
+
+    bullQueue.list().forEach(async (queue) => {
+      await queue.close()
+    })
+  }
 }
