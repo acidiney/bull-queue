@@ -40,7 +40,7 @@ Example:
 ```typescript
 import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
-import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
+import RegisterStripeCustomer, { RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
 
 await app.booted(async () => {
   bull.dispatch(
@@ -128,7 +128,7 @@ In case you want to start a custom queue, do not forget to name it when you `dis
 ```ts
 import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
-import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
+import RegisterStripeCustomer, { RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
 
 await app.booted(async () => {
   bull.dispatch(
