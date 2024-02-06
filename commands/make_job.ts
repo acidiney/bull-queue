@@ -10,7 +10,7 @@ export default class MakeJob extends BaseCommand {
   name!: string
 
   static options: CommandOptions = {
-    startApp: true,
+    startApp: false,
     staysAlive: false,
   }
 
