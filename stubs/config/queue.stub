@@ -47,8 +47,3 @@ connection: {
   queueNames: ['default'],
   queuePrefix: '@bull-'
 })
-
-declare module '@adonisjs/core/types' {
-  interface ContainerBindings {
-  }
-}

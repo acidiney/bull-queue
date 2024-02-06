@@ -40,11 +40,11 @@ Example:
 ```typescript
 import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
-import { RegisterStripeCustomer, RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
+import { RegisterStripeCustomerPayload } from '#app/jobs/register_stripe_customer.js'
 
 await app.booted(async () => {
   bull.dispatch(
-    RegisterStripeCustomer.instance(),
+    'RegisterStripeCustomer',
     { userId: '123456' } as RegisterStripeCustomerPayload,
   )
 })
@@ -77,13 +77,17 @@ export class RegisterStripeCustomer implements JobHandlerContract<RegisterStripe
     const { userId } = job.data;
     // Send notification or log failure
   }
-
-  public static instance (): 'RegisterStripeCustomer' {
-    app.container.singleton('RegisterStripeCustomer', () => new RegisterStripeCustomer())
-
-    return 'RegisterStripeCustomer'
-  }
 }
+
+// You need to declare the new job inside `start/jobs.ts` to be preload.
+import { RegisterStripeCustomer } from '#app/jobs/register_stripe_customer.js'
+
+const jobs: Record<string, Function> = {
+  [RegisterStripeCustomer.name]: () => new RegisterStripeCustomer(),
+}
+
+export { jobs }
+
 
 // Define payload types for jobs in the `config/queue.ts` file to ensure type safety and consistency.
 declare module '@adonisjs/core/types' {
@@ -92,6 +96,9 @@ declare module '@adonisjs/core/types' {
   }
 }
 ```
+
+
+
 
 ### Job Lifecycle <a id="job-lifecycle"></a>
 
@@ -114,7 +121,7 @@ Example:
 node ace queue:listen:ui
 ```
 
-By default, the UI will be accessible at `localhost:9999/ui`. You can specify a different port using the `--port` option:
+By default, the UI will be accessible at `localhost:9999/admin`. You can specify a different port using the `--port` option:
 
 ```bash
 node ace queue:listen:ui --port=3939

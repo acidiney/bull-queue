@@ -22,6 +22,7 @@ export async function configure(command: ConfigureCommand) {
    * Publish config file
    */
   await codemods.makeUsingStub(stubsRoot, 'config/queue.stub', {})
+  await codemods.makeUsingStub(stubsRoot, 'start/jobs.stub', {})
 
   /**
    * Register provider

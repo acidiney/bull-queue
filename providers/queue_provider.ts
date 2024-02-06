@@ -37,6 +37,17 @@ export default class QueueProvider {
     })
   }
 
+  async boot() {
+    const { jobs } = await import(this.app.startPath('jobs.ts'))
+    const logger = await this.app.container.make('logger')
+    const jobNames = Object.keys(jobs)
+
+    for (const job of jobNames) {
+      this.app.container.singleton<any>(job, jobs[job])
+      logger.info(`[@acidiney/bull-queue] ${job} loaded!`)
+    }
+  }
+
   async shutdown() {
     const bullQueue = await this.app.container.make('bull_queue')
 
