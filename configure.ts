@@ -31,4 +31,23 @@ export async function configure(command: ConfigureCommand) {
     rcFile.addProvider('@acidiney/bull-queue/queue_provider')
     rcFile.addCommand('@acidiney/bull-queue/commands')
   })
+
+  /**
+   * Add environment variables
+   */
+  await codemods.defineEnvVariables({
+    REDIS_HOST: '127.0.0.1',
+    REDIS_PORT: '6379',
+    REDIS_PASSWORD: '',
+  })
+
+  /**
+   * Validate environment variables
+   */
+  await codemods.defineEnvValidations({
+    variables: {
+      REDIS_HOST: `Env.schema.string({ format: 'host' })`,
+      REDIS_PORT: 'Env.schema.number()',
+    },
+  })
 }
