@@ -112,6 +112,28 @@ export class BullManager {
     })
   }
 
+  private resolveQueueNames(queuesNames?: string[]): string[] {
+    return queuesNames ?? Array.from(this.queues.keys())
+  }
+
+  async clearBulk(queuesNames?: string[]) {
+    const queues = this.resolveQueueNames(queuesNames)
+
+    // Add the rest of the clearBulk logic here...
+
+    for (const queueName of queues) {
+      await this.clear(queueName)
+    }
+  }
+
+  async processBulk(queuesNames?: string[]) {
+    const queues = this.resolveQueueNames(queuesNames)
+
+    for (const queueName of queues) {
+      await this.process({ queueName })
+    }
+  }
+
   list() {
     return this.queues
   }
@@ -134,23 +156,21 @@ export class BullManager {
 
     const h3Router = createRouter()
 
-    const bullQueue = await this.app.container.make('bull_queue')
+    let queues = [...this.list().values()]
 
-    const queues = [...bullQueue.list().values()].map((q) => new BullAdapter(q))
+    if (queue) {
+      queues = queues.filter((q) => queue.includes(q.name))
+    }
 
     await createBullBoard({
-      queues,
+      queues: queues.map((q) => new BullAdapter(q)),
       serverAdapter,
     })
 
     app.use(h3Router)
     app.use(serverAdapter.registerHandlers())
 
-    for (const q of queue) {
-      await this.process({
-        queueName: q,
-      })
-    }
+    await this.processBulk(queue || this.queues.keys())
 
     await createServer(toNodeListener(app)).listen(port)
     this.logger.info(`BullBoard started on port :${port}`)

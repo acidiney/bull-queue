@@ -1,3 +1,10 @@
+/**
+ * @acidiney/bull-queue
+ *
+ * @license MIT
+ * @copyright Romain Lanz <acidineydias@gmail.com>
+ */
+
 import { CommandOptions } from '@adonisjs/core/types/ace'
 import { stubsRoot } from '../stubs/main.js'
 import { BaseCommand, args } from '@adonisjs/core/ace'

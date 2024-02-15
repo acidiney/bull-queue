@@ -1,4 +1,10 @@
-import { configProvider } from '@adonisjs/core'
+/**
+ * @acidiney/bull-queue
+ *
+ * @license MIT
+ * @copyright Romain Lanz <acidineydias@gmail.com>
+ */
+
 import { BaseCommand, flags } from '@adonisjs/core/ace'
 import { CommandOptions } from '@adonisjs/core/types/ace'
 
@@ -16,17 +22,7 @@ export default class QueueListener extends BaseCommand {
 
   async run() {
     const Queue = await this.app.container.make('bull_queue')
-    const queueConfigProvider = await this.app.config.get('queue')
-    const config = await configProvider.resolve<any>(this.app, queueConfigProvider)
 
-    if (!this.queue || this.queue.length === 0) this.queue = config.queueNames
-
-    await Promise.all(
-      this.queue.map(async (queue) => {
-        await Queue.clear(queue)
-      })
-    )
-
-    return
+    await Queue.clearBulk(this.queue)
   }
 }
