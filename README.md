@@ -45,7 +45,7 @@ import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
 import RegisterStripeCustomer, {
   RegisterStripeCustomerPayload,
-} from '#app/jobs/register_stripe_customer.js'
+} from '#app/jobs/register_stripe_customer'
 
 await app.booted(async () => {
   bull.dispatch(RegisterStripeCustomer.name, { userId: '123456' } as RegisterStripeCustomerPayload)
@@ -137,7 +137,7 @@ import app from '@adonisjs/core/services/app'
 import bull from '@acidiney/bull-queue/services/main'
 import RegisterStripeCustomer, {
   RegisterStripeCustomerPayload,
-} from '#app/jobs/register_stripe_customer.js'
+} from '#app/jobs/register_stripe_customer'
 
 await app.booted(async () => {
   bull.dispatch(
