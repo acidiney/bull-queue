@@ -8,7 +8,6 @@
   })
 }}}
 
-import app from '@adonisjs/core/services/app'
 import type { JobHandlerContract, Job } from '@acidiney/bull-queue/types'
 
 export type {{ name }}Payload = {}
@@ -18,10 +17,14 @@ export default class {{ name }}Job implements JobHandlerContract<{{ name }}Paylo
   /**
    * Base Entry point
    */
-  async handle(job: Job<{{ name }}Payload>) {}
+  async handle(job: Job<{{ name }}Payload>) {
+    throw new Error("Need to be implemented!")
+  }
 
   /**
    * This is an optional method that gets called if it exists when the retries has exceeded and is marked failed.
    */
-  async failed() {}
+  async failed()job: Job<{{ name }}Payload>) {
+    throw new Error("Need to be implemented!")
+  }
 }
