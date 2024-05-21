@@ -29,6 +29,7 @@ export type QueueConfig = {
   jobs: JobsOptions
   queueNames: string[]
   queuePrefix: string
+  uiPath: string
 }
 
 export interface QueueContract {

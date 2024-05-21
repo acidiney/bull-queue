@@ -45,5 +45,6 @@ connection: {
     removeOnFail: 100
   },
   queueNames: ['default'],
-  queuePrefix: '@bull-'
+  queuePrefix: '@bull-',
+  queuePrefix: '/admin'
 })

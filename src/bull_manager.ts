@@ -8,7 +8,7 @@ import { ContainerBindings } from '@adonisjs/core/types'
 import { createBullBoard } from '@bull-board/api'
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js'
 import { H3Adapter } from '@bull-board/h3'
-import { createApp, createRouter, toNodeListener } from 'h3'
+import { createApp, createRouter, toNodeListener, sendRedirect, defineEventHandler } from 'h3'
 import { createServer } from 'node:http'
 
 export class BullManager {
@@ -19,6 +19,10 @@ export class BullManager {
     private logger: Logger,
     private app: Application<ContainerBindings>
   ) {
+    if (options.uiPath === '/') {
+      throw new Error('uiPath cannot be /!')
+    }
+
     this.queues.set(
       this.prefix('default'),
       new Queue(this.prefix('default'), {
@@ -130,7 +134,7 @@ export class BullManager {
     const queues = this.resolveQueueNames(queuesNames)
 
     for (const queueName of queues) {
-      await this.process({ queueName })
+      this.process({ queueName })
     }
   }
 
@@ -150,9 +154,17 @@ export class BullManager {
 
   async ui(port = 9999, queue: string[]) {
     const serverAdapter = new H3Adapter()
-    serverAdapter.setBasePath('/admin')
+    serverAdapter.setBasePath(this.options.uiPath ?? '/admin')
 
-    const app = createApp()
+    const app = createApp({
+      debug: true,
+      onError: (event) => {
+        this.logger.error(event)
+      },
+      onRequest: (event) => {
+        this.logger.info(`${event.method} ${event.path}`)
+      },
+    })
 
     const h3Router = createRouter()
 
@@ -166,6 +178,13 @@ export class BullManager {
       queues: queues.map((q) => new BullMQAdapter(q)),
       serverAdapter,
     })
+
+    h3Router.get(
+      '/',
+      defineEventHandler((event) => {
+        return sendRedirect(event, this.options.uiPath ?? '/admin', 301)
+      })
+    )
 
     app.use(h3Router)
     app.use(serverAdapter.registerHandlers())

@@ -10,5 +10,6 @@ export function defineConfig(config: QueueConfig): ConfigProvider<QueueConfig> {
     jobs: config.jobs,
     queueNames: config.queueNames,
     queuePrefix: config.queuePrefix,
+    uiPath: config.uiPath,
   }))
 }
