@@ -6,7 +6,7 @@ import type { DataForJob, JobHandlerContract, JobsList, QueueConfig } from './ty
 import { ContainerBindings } from '@adonisjs/core/types'
 
 import { createBullBoard } from '@bull-board/api'
-import { BullAdapter } from '@bull-board/api/bullAdapter.js'
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js'
 import { H3Adapter } from '@bull-board/h3'
 import { createApp, createRouter, toNodeListener } from 'h3'
 import { createServer } from 'node:http'
@@ -162,8 +162,8 @@ export class BullManager {
       queues = queues.filter((q) => queue.includes(q.name))
     }
 
-    await createBullBoard({
-      queues: queues.map((q) => new BullAdapter(q)),
+    createBullBoard({
+      queues: queues.map((q) => new BullMQAdapter(q)),
       serverAdapter,
     })
 
@@ -172,7 +172,7 @@ export class BullManager {
 
     await this.processBulk(queue || this.queues.keys())
 
-    await createServer(toNodeListener(app)).listen(port)
+    createServer(toNodeListener(app)).listen(port)
     this.logger.info(`BullBoard started on port :${port}`)
   }
 }
